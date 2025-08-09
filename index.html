@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Memorice Matemático 1° y 2° Medio (Demo)</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(120deg, #6a11cb, #2575fc);
+    color: white;
+    margin: 0; padding: 0;
+    text-align: center;
+  }
+  header {
+    padding: 20px;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  .menu {
+    margin-bottom: 10px;
+  }
+  select, button {
+    padding: 10px;
+    margin: 5px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: none;
+  }
+  .score {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+  }
+  #tablero {
+    max-width: 700px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(100px,1fr));
+    gap: 12px;
+  }
+  .card {
+    background: white;
+    color: black;
+    border-radius: 10px;
+    height: 90px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.05rem;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  .card:hover:not(.matched) {
+    background-color: #ffd700;
+    transform: scale(1.05);
+  }
+  .card.matched {
+    background-color: #32cd32;
+    cursor: default;
+    opacity: 0.7;
+  }
+  #pizarra {
+    background: white;
+    color: black;
+    max-width: 700px;
+    margin: 20px auto;
+    border-radius: 10px;
+    padding: 15px;
+    display: none;
+    text-align: left;
+  }
+  #pizarra textarea {
+    width: 100%;
+    height: 100px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  #explicacion {
+    background: #f0f0f0;
+    padding: 10px;
+    border-radius: 8px;
+    color: black;
+    min-height: 40px;
+  }
+</style>
+</head>
+<body>
+
+<header>🧠 Memorice Matemático 1° y 2° Medio (Demo)</header>
+
+<div class="menu">
+  <label>Curso:
+    <select id="curso">
+      <option value="1">1° Medio</option>
+      <option value="2">2° Medio</option>
+    </select>
+  </label>
+  <label>Dificultad:
+    <select id="dificultad">
+      <option value="facil">Fácil</option>
+      <option value="medio" selected>Medio</option>
+      <option value="dificil">Difícil</option>
+    </select>
+  </label>
+  <button id="btnStart">Comenzar</button>
+</div>
+
+<div class="score">Puntaje: <span id="puntaje">0</span></div>
+
+<div id="tablero" aria-live="polite" aria-label="Tablero de cartas"></div>
+
+<div id="pizarra" aria-hidden="true">
+  <h3>Pizarra de Cálculo</h3>
+  <textarea placeholder="Escribe aquí tus pasos..."></textarea>
+  <div id="explicacion"></div>
+  <button id="cerrarPizarra">Cerrar Pizarra</button>
+</div>
+
+<script>
+const bancoOperaciones = {
+  '1': {
+    facil: {
+      '(a+b)^2': { resultado: 'a^2+2ab+b^2', explicacion: 'Producto notable: (a+b)² = a² + 2ab + b².' },
+      'x + 3 = 7': { resultado: 'x = 4', explicacion: 'Ecuación lineal: x + 3 = 7, entonces x = 4.' },
+      'Homotecia k=2, h=4': { resultado: 'r = 8', explicacion: 'Homotecia: r = k * h = 8.' },
+      'Punto (3,5)': { resultado: '(3,5)', explicacion: 'Representación en gráfico XY: punto (3,5).' }
+    },
+    medio: {
+      '(x - 1)^2': { resultado: 'x^2 - 2x + 1', explicacion: 'Producto notable con signo: (x - 1)² = x² - 2x + 1.' },
+      'Sistema: x + 2y = 6 \\ 2x - y = 3': { resultado: 'x=3, y=1.5', explicacion: 'Sistema resuelto por sustitución.' },
+      'Homotecia k=3, h=5': { resultado: 'r = 15', explicacion: 'Homotecia: r = k * h = 15.' },
+      'Nube puntos: tendencia creciente': { resultado: 'tendencia creciente', explicacion: 'La nube de puntos muestra una tendencia creciente.' }
+    },
+    dificil: {
+      '(a - b)^3': { resultado: 'a^3 - 3a^2b + 3ab^2 - b^3', explicacion: 'Producto notable cúbico: (a - b)³.' },
+      'Sistema: x - 2y = 4 \\ 3x + y = 7': { resultado: 'x=2, y=-1', explicacion: 'Sistema con solución fraccionaria y negativa.' },
+      'Homotecia k=0.5, h=10': { resultado: 'r = 5', explicacion: 'Homotecia avanzada: r = k * h = 5.' },
+      'Gráfico XY: punto atípico': { resultado: 'punto atípico', explicacion: 'Identificación de punto atípico en gráfico.' }
+    }
+  },
+  '2': {
+    facil: {
+      '√16': { resultado: '4', explicacion: 'Raíz cuadrada de 16 es 4.' },
+      '2^3': { resultado: '8', explicacion: 'Potencia: 2 elevado a 3 es 8.' },
+      'f(x) = x^2': { resultado: 'función cuadrática', explicacion: 'Función cuadrática básica.' },
+      'Ecuación: x^2 = 9': { resultado: 'x = 3 o -3', explicacion: 'Ecuación cuadrática con dos soluciones.' }
+    },
+    medio: {
+      'log₁₀(100)': { resultado: '2', explicacion: 'Logaritmo base 10 de 100 es 2.' },
+      'Cambio % constante: 5%': { resultado: 'incremento constante', explicacion: 'Cambio porcentual constante del 5%.' },
+      'Razón trig: sen30°': { resultado: '0.5', explicacion: 'Seno de 30 grados es 0.5.' },
+      'Variable aleatoria finita X={1,2,3}': { resultado: 'discreto', explicacion: 'Variable aleatoria con valores discretos.' }
+    },
+    dificil: {
+      'Función inversa f(x) = 2x + 3': { resultado: '(x - 3) / 2', explicacion: 'Función inversa calculada.' },
+      'Ecuación cuadrática completa': { resultado: 'usar fórmula cuadrática', explicacion: 'Resolver usando fórmula cuadrática.' },
+      'Potencias y logaritmos combinación': { resultado: 'identidades logarítmicas', explicacion: 'Uso de identidades para combinar potencias y logaritmos.' },
+      'Razón trig complicada': { resultado: 'usar identidades trigonométricas', explicacion: 'Resolver con identidades avanzadas.' }
+    }
+  }
+};
+
+let puntaje = 0;
+let cartasSeleccionadas = [];
+let paresCorrectos = {};
+let explicaciones = {};
+let boardLocked = false;
+let totalParejas = 0;
+
+const btnStart = document.getElementById('btnStart');
+const tablero = document.getElementById('tablero');
+const pizarraEl = document.getElementById('pizarra');
+const explicacionEl = document.getElementById('explicacion');
+const cerrarPizarraBtn = document.getElementById('cerrarPizarra');
+const puntajeEl = document.getElementById('puntaje');
+
+btnStart.addEventListener('click', iniciarJuego);
+cerrarPizarraBtn.addEventListener('click', () => {
+  pizarraEl.style.display = 'none';
+  pizarraEl.setAttribute('aria-hidden', 'true');
+});
+
+function iniciarJuego() {
+  puntaje = 0;
+  puntajeEl.textContent = puntaje;
+  cartasSeleccionadas = [];
+  paresCorrectos = {};
+  explicaciones = {};
+  boardLocked = false;
+  totalParejas = 0;
+  pizarraEl.style.display = 'none';
+  pizarraEl.setAttribute('aria-hidden', 'true');
+  tablero.innerHTML = '';
+
+  let curso = document.getElementById('curso').value;
+  let dificultad = document.getElementById('dificultad').value;
+
+  if (!bancoOperaciones.hasOwnProperty(curso)) {
+    curso = Object.keys(bancoOperaciones)[0];
+  }
+  if (!bancoOperaciones[curso].hasOwnProperty(dificultad)) {
+    dificultad = Object.keys(bancoOperaciones[curso])[0];
+  }
+
+  const operaciones = bancoOperaciones[curso][dificultad];
+  if (!operaciones || Object.keys(operaciones).length === 0) {
+    tablero.textContent = 'No hay operaciones para esta selección.';
+    return;
+  }
+
+  let cartas = [];
+  for (const pregunta in operaciones) {
+    const res = operaciones[pregunta].resultado;
+    paresCorrectos[pregunta] = res;
+    paresCorrectos[res] = pregunta;
+    explicaciones[pregunta] = operaciones[pregunta].explicacion;
+    explicaciones[res] = operaciones[pregunta].explicacion;
+    cartas.push(pregunta, res);
+  }
+
+  for (let i = cartas.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cartas[i], cartas[j]] = [cartas[j], cartas[i]];
+  }
+
+  totalParejas = cartas.length / 2;
+  cartas.forEach(texto => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.textContent = texto;
+    card.setAttribute('role', 'button');
+    card.addEventListener('click', () => seleccionarCarta(card, texto));
+    tablero.appendChild(card);
+  });
+}
+
+function seleccionarCarta(card, texto) {
+  if (boardLocked) return;
+  if (cartasSeleccionadas.some(c => c.elemento === card)) return;
+
+  cartasSeleccionadas.push({ elemento: card, valor: texto });
+  card.style.backgroundColor = '#ffd700';
+
+  if (cartasSeleccionadas.length === 2) {
+    boardLocked = true;
+    setTimeout(verificarPar, 400);
+  }
+}
+
+function verificarPar() {
+  const [c1, c2] = cartasSeleccionadas;
+  if (!c1 || !c2) {
+    cartasSeleccionadas = [];
+    boardLocked = false;
+    return;
+  }
+
+  if (paresCorrectos[c1.valor] === c2.valor) {
+    actualizarPuntaje(10);
+    c1.elemento.classList.add('matched');
+    c2.elemento.classList.add('matched');
+    c1.elemento.style.backgroundColor = '#32cd32';
+    c2.elemento.style.backgroundColor = '#32cd32';
+
+    c1.elemento.replaceWith(c1.elemento.cloneNode(true));
+    c2.elemento.replaceWith(c2.elemento.cloneNode(true));
+
+    const matchedCount = document.querySelectorAll('.card.matched').length / 2;
+    if (matchedCount === totalParejas) {
+      alert('¡Felicidades! Completaste todas las parejas.');
+    }
+  } else {
+    actualizarPuntaje(-5);
+    const expl = explicaciones[c1.valor] || explicaciones[c2.valor] || 'No hay explicación disponible.';
+    mostrarExplicacion(expl);
+    setTimeout(() => {
+      c1.elemento.style.backgroundColor = 'white';
+      c2.elemento.style.backgroundColor = 'white';
+    }, 900);
+  }
+
+  cartasSeleccionadas = [];
+  boardLocked = false;
+}
+
+function mostrarExplicacion(texto) {
+  explicacionEl.textContent = texto;
+  pizarraEl.style.display = 'block';
+  pizarraEl.setAttribute('aria-hidden', 'false');
+}
+
+function actualizarPuntaje(cant) {
+  puntaje += cant;
+  puntajeEl.textContent = puntaje;
+}
+</script>
+
+</body>
+</html>
