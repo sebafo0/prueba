@@ -3,222 +3,206 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Memorice Matemático Completo</title>
+<title>Memorice Matemático - 1° a 4° Medio</title>
 <style>
   body {
     font-family: Arial, sans-serif;
-    background: #f0f4f8;
-    margin: 0; padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-  }
-  header {
-    margin: 20px;
+    margin: 1em;
+    background: #f5f5f5;
   }
   h1 {
-    margin-bottom: 0;
-    color: #2c3e50;
-  }
-  .controls {
-    margin-bottom: 15px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  select {
-    padding: 5px 10px;
-    font-size: 16px;
-  }
-  #scoreboard, #timer {
-    font-size: 20px;
-    margin: 0 10px;
-    min-width: 120px;
     text-align: center;
+    margin-bottom: 0.5em;
+  }
+  #controls {
+    text-align: center;
+    margin-bottom: 1em;
+  }
+  select, button {
+    font-size: 1rem;
+    padding: 0.4em 0.8em;
+    margin: 0 0.5em;
   }
   #board {
-    width: 640px;
-    max-width: 95vw;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
+    grid-template-columns: repeat(4, 140px);
+    grid-gap: 15px;
+    justify-content: center;
+    margin-bottom: 1em;
   }
   .card {
-    background: #2980b9;
-    color: white;
+    background: #eee;
+    border: 2px solid #ccc;
     height: 110px;
-    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: 18px;
-    user-select: none;
+    font-size: 1rem;
     cursor: pointer;
-    box-shadow: 0 4px 7px rgba(0,0,0,0.2);
-    transition: background-color 0.3s ease;
+    user-select: none;
+    color: transparent;
+    transition: background-color 0.3s, color 0.3s;
+    padding: 0.5em;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
   }
-  .card.flipped, .card.matched {
-    background: #27ae60;
+  .card.flipped {
+    background: #4caf50;
+    color: black;
+    cursor: default;
+  }
+  .card.matched {
+    background: #2e7d32;
+    color: white;
     cursor: default;
   }
   .card.wrong {
-    background: #c0392b;
+    background: #f44336;
+    color: white;
+    cursor: default;
   }
   #explanation {
-    max-width: 640px;
-    background: #ecf0f1;
-    padding: 15px 20px;
-    border-radius: 10px;
-    color: #2c3e50;
-    min-height: 70px;
-    font-size: 16px;
+    min-height: 3em;
+    margin-bottom: 1em;
+    font-style: italic;
+    text-align: center;
+    color: #333;
   }
-  .board-facil .card { background: #3498db; }
-  .board-medio .card { background: #e67e22; }
-  .board-dificil .card { background: #c0392b; }
-  .board-extremo .card { background: #8e44ad; }
+  #scoreboard, #timer {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin: 0.3em 1em;
+  }
+  #info-bar {
+    text-align: center;
+    margin-bottom: 1em;
+  }
+
+  /* Colores para dificultad */
+  .board-facil .card { border-color: #81c784; }
+  .board-medio .card { border-color: #4caf50; }
+  .board-dificil .card { border-color: #388e3c; }
+  .board-extremo .card { border-color: #1b5e20; }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>Memorice Matemático Completo</h1>
-  <div class="controls">
-    <label>
-      Curso: 
-      <select id="curso-select">
-        <option value="1medio">1° Medio</option>
-        <option value="2medio">2° Medio</option>
-        <option value="3medio">3° Medio</option>
-        <option value="4medio">4° Medio</option>
-      </select>
-    </label>
-    <label>
-      Dificultad:
-      <select id="dificultad-select">
-        <option value="facil">Fácil</option>
-        <option value="medio">Medio</option>
-        <option value="dificil">Difícil</option>
-        <option value="extremo">Extremo</option>
-      </select>
-    </label>
-    <button id="start-btn">Comenzar</button>
-  </div>
-  <div>
-    <span id="scoreboard">Puntaje: 0</span>
-    <span id="timer">Tiempo: 00:00</span>
-  </div>
-</header>
+<h1>Memorice Matemático - 1° a 4° Medio</h1>
 
-<main>
-  <div id="board" class="board-facil"></div>
-  <div id="explanation">Aquí aparecerán las explicaciones cuando falles.</div>
-</main>
+<div id="controls">
+  Curso: 
+  <select id="curso-select">
+    <option value="1medio">1° Medio</option>
+    <option value="2medio">2° Medio</option>
+    <option value="3medio">3° Medio</option>
+    <option value="4medio">4° Medio</option>
+  </select>
+  Dificultad: 
+  <select id="dificultad-select">
+    <option value="facil">Fácil</option>
+    <option value="medio">Medio</option>
+    <option value="dificil">Difícil</option>
+    <option value="extremo">Extremo</option>
+  </select>
+  <button id="start-btn">Iniciar Juego</button>
+</div>
+
+<div id="info-bar">
+  <span id="scoreboard">Puntaje: 0</span>
+  <span id="timer">Tiempo: 00:00</span>
+</div>
+
+<div id="board" class="board-facil"></div>
+
+<div id="explanation"></div>
 
 <script>
+  // Banco de ejercicios por curso y dificultad
   const bancoOperaciones = {
     "1medio": {
       "facil": [
-        { pregunta: "7 + 15", respuesta: "22", explicacion: "Suma básica: 7 + 15 = 22" },
-        { pregunta: "56 - 29", respuesta: "27", explicacion: "Resta básica: 56 - 29 = 27" },
-        { pregunta: "8 × 6", respuesta: "48", explicacion: "Multiplicación simple: 8 × 6 = 48" },
-        { pregunta: "72 ÷ 8", respuesta: "9", explicacion: "División simple: 72 ÷ 8 = 9" },
-        { pregunta: "5^2", respuesta: "25", explicacion: "Potencia: 5^2 = 25" },
-        { pregunta: "Perímetro cuadrado lado 8 cm", respuesta: "32", explicacion: "Perímetro = 4 × lado = 4 × 8 = 32 cm" },
-        { pregunta: "2/3 + 1/6", respuesta: "5/6", explicacion: "Suma fracciones: común denominador 6; 4/6 + 1/6 = 5/6" },
-        { pregunta: "Convierte 2,5 m a cm", respuesta: "250", explicacion: "1 m = 100 cm; 2.5 m = 250 cm" },
-        { pregunta: "Simplifica 12/18", respuesta: "2/3", explicacion: "Dividir numerador y denominador por 6: 12/6=2, 18/6=3" },
-        { pregunta: "Resuelve: 3x + 5 = 14", respuesta: "3", explicacion: "3x = 14 - 5 = 9; x = 9/3 = 3" }
+        { pregunta: "Simplifica: (a + b)²", respuesta: "a² + 2ab + b²", explicacion: "Producto notable cuadrado de binomio" },
+        { pregunta: "Suma: 2x + 3x", respuesta: "5x", explicacion: "Suma de términos semejantes" },
+        { pregunta: "Resuelve: x + 3 = 7", respuesta: "4", explicacion: "Despeja x" },
+        { pregunta: "Área rectángulo base 4 cm altura 5 cm", respuesta: "20", explicacion: "Área = base × altura" },
+        { pregunta: "Representa datos en gráfico XY", respuesta: "Puntos en plano", explicacion: "Nube de puntos" },
+        { pregunta: "Sistema: x + y = 3, x - y = 1", respuesta: "x=2, y=1", explicacion: "Suma y resta para despejar" },
+        { pregunta: "Homotecia: escala 2, punto (3,4)", respuesta: "(6,8)", explicacion: "Multiplica coordenadas por escala" },
+        { pregunta: "Simplifica: 3(x + 2)", respuesta: "3x + 6", explicacion: "Distribución" }
       ],
       "medio": [
-        { pregunta: "(5 + 3) × 4 - 6", respuesta: "26", explicacion: "Operación: 8 × 4 - 6 = 32 - 6 = 26" },
-        { pregunta: "2^3 + 4^2", respuesta: "24", explicacion: "Potencias: 8 + 16 = 24" },
-        { pregunta: "Resuelve: 4x - 7 = 13", respuesta: "5", explicacion: "4x = 13 + 7 = 20; x = 20/4 = 5" },
-        { pregunta: "Área triángulo base 12 cm y altura 8 cm", respuesta: "48", explicacion: "Área = (base × altura) / 2 = (12×8)/2 = 48 cm²" },
-        { pregunta: "5/6 - 2/9", respuesta: "11/18", explicacion: "Común denominador 18: 15/18 - 4/18 = 11/18" },
-        { pregunta: "Convierte 3,6 km a metros", respuesta: "3600", explicacion: "1 km = 1000 m; 3.6 km = 3600 m" },
-        { pregunta: "Factoriza x² + 5x + 6", respuesta: "(x + 2)(x + 3)", explicacion: "Buscamos dos números que multiplican 6 y suman 5" },
-        { pregunta: "Resuelve: (3/4)x = 12", respuesta: "16", explicacion: "x = 12 ÷ (3/4) = 12 × (4/3) = 16" },
-        { pregunta: "Encuentra 25% de 240", respuesta: "60", explicacion: "25% = 0.25; 0.25 × 240 = 60" },
-        { pregunta: "¿87 es primo o compuesto?", respuesta: "compuesto", explicacion: "87 tiene divisores: 3 × 29 = 87, por tanto es compuesto" }
+        { pregunta: "Producto: (x+2)(x+3)", respuesta: "x² + 5x + 6", explicacion: "Multiplica binomios" },
+        { pregunta: "Resuelve sistema: 2x + y = 5, x - y = 1", respuesta: "x=2, y=1", explicacion: "Método sustitución" },
+        { pregunta: "Área triángulo base 6 altura 4", respuesta: "12", explicacion: "Área = (base × altura)/2" },
+        { pregunta: "Representa función lineal y=2x+1", respuesta: "Recta con pendiente 2", explicacion: "Pendiente e intercepto" },
+        { pregunta: "Calcula media de: 2,4,6,8", respuesta: "5", explicacion: "Promedio aritmético" },
+        { pregunta: "Homotecia inversa escala 0.5, punto (6,8)", respuesta: "(3,4)", explicacion: "Multiplica coordenadas por escala" },
+        { pregunta: "Simplifica: (2x)²", respuesta: "4x²", explicacion: "Potencia de producto" },
+        { pregunta: "Suma: 5a - 3a + 2a", respuesta: "4a", explicacion: "Suma términos semejantes" }
       ],
       "dificil": [
-        { pregunta: "Resuelve: 5(2x - 3) = 4x + 7", respuesta: "4", explicacion: "10x - 15 = 4x + 7 → 6x = 22 → x = 22/6 = 3.67 (aprox 4)" },
-        { pregunta: "Velocidad: 180 km en 3 h", respuesta: "60", explicacion: "Velocidad = distancia/tiempo = 180/3 = 60 km/h" },
-        { pregunta: "√144 + √81", respuesta: "21", explicacion: "12 + 9 = 21" },
-        { pregunta: "Factoriza x² - 9x + 20", respuesta: "(x - 4)(x - 5)", explicacion: "Números que multiplican 20 y suman 9" },
-        { pregunta: "Área círculo radio 5 cm (π ≈ 3.14)", respuesta: "78.5", explicacion: "Área = πr² = 3.14 × 25 = 78.5 cm²" },
-        { pregunta: "Resuelve: (2x - 5)/3 = 7", respuesta: "13", explicacion: "2x - 5 = 21 → 2x = 26 → x = 13" },
-        { pregunta: "Dos números consecutivos suman 51", respuesta: "25 y 26", explicacion: "x + (x+1) = 51 → 2x+1=51 → x=25" },
-        { pregunta: "Rectángulo perímetro 48 cm, base 14 cm; altura?", respuesta: "10", explicacion: "Perímetro = 2(base+altura) → 48=2(14+h) → h=10" },
-        { pregunta: "3^4 - 2^5", respuesta: "49", explicacion: "81 - 32 = 49" },
-        { pregunta: "Ordena: 0.75, 5/8, 0.7", respuesta: "0.7 < 5/8 < 0.75", explicacion: "0.7=0.7, 5/8=0.625, 0.75=0.75" }
+        { pregunta: "Resuelve sistema: 3x + 2y = 12, x - y = 1", respuesta: "x=3, y=2", explicacion: "Método eliminación" },
+        { pregunta: "Simplifica: (x + 1)(x² - x + 1)", respuesta: "x³ + 1", explicacion: "Producto de binomios y trinomios" },
+        { pregunta: "Área trapecio bases 3 y 5 altura 4", respuesta: "16", explicacion: "((B + b)/2) × h" },
+        { pregunta: "Representa función cuadrática y = x² - 4x + 3", respuesta: "Parábola", explicacion: "Gráfico función cuadrática" },
+        { pregunta: "Calcula desviación estándar de 2,4,4,4,5,5,7,9", respuesta: "2", explicacion: "Medida de dispersión" },
+        { pregunta: "Homotecia con centro en (0,0) y escala -1", respuesta: "Reflejo respecto al origen", explicacion: "Escala negativa" },
+        { pregunta: "Resuelve ecuación cuadrática x² - 5x + 6 = 0", respuesta: "2 y 3", explicacion: "Factorización" },
+        { pregunta: "Representa nube de puntos y tendencia", respuesta: "Datos dispersos con línea", explicacion: "Gráficos XY" }
       ],
       "extremo": [
-        { pregunta: "Resuelve: 2x² - 5x - 3 = 0", respuesta: "3 y -0.5", explicacion: "Fórmula cuadrática" },
-        { pregunta: "Auto reduce velocidad de 90 a 54 km/h en 6 s; aceleración?", respuesta: "-1 m/s²", explicacion: "a = Δv / Δt = (15 - 25) / 6 ≈ -1 m/s²" },
-        { pregunta: "Hipotenusa triángulo catetos 8 y 15 cm", respuesta: "17", explicacion: "Teorema de Pitágoras: √(8²+15²) = 17" },
-        { pregunta: "Volumen cilindro radio 4 cm, altura 10 cm", respuesta: "502.4", explicacion: "V=πr²h=3.14×16×10=502.4 cm³" },
-        { pregunta: "Resuelve: (x+2)/4 - (x-1)/3 = 2", respuesta: "10", explicacion: "Resolver la ecuación" },
-        { pregunta: "Media y mediana: 5,7,8,10,12,14", respuesta: "Media=9.33, Mediana=9", explicacion: "Calcular promedio y valor medio" },
-        { pregunta: "7^x = 343, x=?", respuesta: "3", explicacion: "7³=343" },
-        { pregunta: "Capital $50,000 al 8% interés simple por 3 años; ganancias?", respuesta: "$12,000", explicacion: "I = C × r × t" },
-        { pregunta: "Pendiente recta pasa por (2,3) y (5,11)", respuesta: "8/3", explicacion: "(11-3)/(5-2) = 8/3" },
-        { pregunta: "Resuelve sistema: x + y = 8, 2x - y = 3", respuesta: "x=3, y=5", explicacion: "Sumar y despejar" }
+        { pregunta: "Demuestra identidad: (a+b)³", respuesta: "a³ + 3a²b + 3ab² + b³", explicacion: "Cubo de binomio" },
+        { pregunta: "Resuelve sistema 3x + 2y - z = 7", respuesta: "Varía", explicacion: "Sistema con 3 variables" },
+        { pregunta: "Calcula inversa función f(x) = 2x + 3", respuesta: "(x - 3)/2", explicacion: "Despeja x" },
+        { pregunta: "Aplica homotecia con centro fuera del origen", respuesta: "Varía", explicacion: "Escala con traslación" },
+        { pregunta: "Analiza correlación nube de puntos", respuesta: "Positiva, negativa o nula", explicacion: "Interpretación gráfica" },
+        { pregunta: "Resuelve sistema no lineal simple", respuesta: "Varía", explicacion: "Ecuaciones no lineales" },
+        { pregunta: "Calcula área bajo curva poligonal", respuesta: "Varía", explicacion: "Aproximación área" },
+        { pregunta: "Demuestra propiedad distributiva", respuesta: "a(b + c) = ab + ac", explicacion: "Propiedad algebraica" }
       ]
     },
     "2medio": {
       "facil": [
-        { pregunta: "√25", respuesta: "5", explicacion: "La raíz cuadrada de 25 es 5" },
-        { pregunta: "3^2", respuesta: "9", explicacion: "3 al cuadrado es 9" },
-        { pregunta: "Convierte 1500 m a km", respuesta: "1.5", explicacion: "1500 m son 1.5 km" },
-        { pregunta: "Suma: 1/2 + 1/3", respuesta: "5/6", explicacion: "Suma fracciones con común denominador 6" },
-        { pregunta: "Convierte 45% a decimal", respuesta: "0.45", explicacion: "45% es 0.45 en decimal" },
-        { pregunta: "Área rectángulo base 7 cm y altura 5 cm", respuesta: "35", explicacion: "Área = base × altura = 7 × 5 = 35 cm²" },
-        { pregunta: "Simplifica 18/24", respuesta: "3/4", explicacion: "Dividir numerador y denominador por 6" },
-        { pregunta: "Resuelve: 2x + 5 = 13", respuesta: "4", explicacion: "2x = 13 - 5 → x = 4" },
-        { pregunta: "Factoriza x² - 9", respuesta: "(x - 3)(x + 3)", explicacion: "Diferencia de cuadrados" },
-        { pregunta: "Calcula 5% de 200", respuesta: "10", explicacion: "5% de 200 es 10" }
+        { pregunta: "Calcula raíz cuadrada de 49", respuesta: "7", explicacion: "Raíz cuadrada exacta" },
+        { pregunta: "Evalúa: 2³", respuesta: "8", explicacion: "Potencia" },
+        { pregunta: "Resuelve: log₁₀100", respuesta: "2", explicacion: "Logaritmo base 10" },
+        { pregunta: "Simplifica: (x²)³", respuesta: "x⁶", explicacion: "Potencia de potencia" },
+        { pregunta: "Función cuadrática: y = x²", respuesta: "Parábola", explicacion: "Gráfico básico" },
+        { pregunta: "Calcula cambio porcentual de 50 a 60", respuesta: "20%", explicacion: "Incremento porcentual" },
+        { pregunta: "Suma: 3x² + 2x²", respuesta: "5x²", explicacion: "Términos semejantes" },
+        { pregunta: "Ecuación cuadrática: x² - 9 = 0", respuesta: "3 y -3", explicacion: "Raíces reales" }
       ],
       "medio": [
-        { pregunta: "Calcula log₁₀(1000)", respuesta: "3", explicacion: "log₁₀(1000) = 3 porque 10³ = 1000" },
-        { pregunta: "Incrementa 100 en 10%", respuesta: "110", explicacion: "10% de 100 es 10; suma 110" },
-        { pregunta: "Calcula sin 45° (aprox)", respuesta: "0.707", explicacion: "sin 45° ≈ 0.707" },
-        { pregunta: "Resuelve x² - 5x + 6 = 0", respuesta: "2 y 3", explicacion: "Factoriza (x-2)(x-3)=0" },
-        { pregunta: "Convierte 0.75 a fracción", respuesta: "3/4", explicacion: "0.75 es 3/4" },
-        { pregunta: "Calcula 2³ + 3²", respuesta: "17", explicacion: "8 + 9 = 17" },
-        { pregunta: "Calcula inversa f(x) = 2x + 1", respuesta: "(x-1)/2", explicacion: "Despeja x en y = 2x+1" },
-        { pregunta: "Calcula cambio porcentual de 50 a 55", respuesta: "10%", explicacion: "Incremento del 10%" },
-        { pregunta: "Calcula razones trigonométricas básicas", respuesta: "Varía según", explicacion: "Definiciones de seno, coseno, tangente" },
-        { pregunta: "Ejemplo variable aleatoria finita", respuesta: "Lanzar dado", explicacion: "Valores posibles 1 a 6" }
+        { pregunta: "Calcula log₂8", respuesta: "3", explicacion: "Potencia base 2" },
+        { pregunta: "Resuelve función inversa f(x) = 3x - 5", respuesta: "(x + 5)/3", explicacion: "Despeja x" },
+        { pregunta: "Calcula área triángulo base 10 altura 6", respuesta: "30", explicacion: "Área básica" },
+        { pregunta: "Simplifica expresión: (2x)(3x²)", respuesta: "6x³", explicacion: "Multiplicación potencias" },
+        { pregunta: "Calcula razón trigonométrica seno 30°", respuesta: "0.5", explicacion: "Definición seno" },
+        { pregunta: "Calcula variable aleatoria finita", respuesta: "Varía", explicacion: "Ejemplo variable discreta" },
+        { pregunta: "Ecuación cuadrática: x² + 5x + 6 = 0", respuesta: "-2 y -3", explicacion: "Raíces por factorización" },
+        { pregunta: "Calcula función logarítmica y = log x", respuesta: "Definición", explicacion: "Propiedades logaritmos" }
       ],
       "dificil": [
-        { pregunta: "Resuelve sistema:\n2x + y = 7\nx - y = 3", respuesta: "x=4, y=-1", explicacion: "Suma y despeja" },
-        { pregunta: "Calcula log(ab)", respuesta: "log a + log b", explicacion: "Propiedad logarítmica" },
-        { pregunta: "Calcula log₂16", respuesta: "4", explicacion: "2⁴=16" },
-        { pregunta: "Resuelve 3ˣ = 27", respuesta: "3", explicacion: "3³=27" },
-        { pregunta: "Simplifica (3x²y)/(6xy²)", respuesta: "x/(2y)", explicacion: "Divide numeradores y denominadores" },
-        { pregunta: "Aplica fórmula cuadrática: x² - 4x - 5=0", respuesta: "5 y -1", explicacion: "Despeja con fórmula" },
-        { pregunta: "Calcula tan 60° (aprox)", respuesta: "1.732", explicacion: "tan 60° ≈ √3 ≈ 1.732" },
-        { pregunta: "Ejemplo variable aleatoria discreta", respuesta: "Número de hijos", explicacion: "Valores enteros" },
-        { pregunta: "Calcula interés simple $5000, 5%, 2 años", respuesta: "$500", explicacion: "I = C × r × t" },
-        { pregunta: "Convierte 120 min a horas", respuesta: "2", explicacion: "120/60 = 2 horas" }
+        { pregunta: "Calcula potencia con exponente fraccionario: 27^(1/3)", respuesta: "3", explicacion: "Raíz cúbica" },
+        { pregunta: "Resuelve ecuación cuadrática con fórmula", respuesta: "Varía", explicacion: "Fórmula general" },
+        { pregunta: "Calcula cambio porcentual compuesto", respuesta: "Varía", explicacion: "Interés compuesto" },
+        { pregunta: "Calcula función inversa de y = (x - 1)²", respuesta: "√y + 1", explicacion: "Raíz cuadrada" },
+        { pregunta: "Calcula razones trigonométricas tangente 45°", respuesta: "1", explicacion: "Definición tangente" },
+        { pregunta: "Calcula variable aleatoria discreta", respuesta: "Varía", explicacion: "Ejemplo concreto" },
+        { pregunta: "Deriva función básica f(x) = x²", respuesta: "2x", explicacion: "Regla potencia" },
+        { pregunta: "Simplifica expresión logarítmica", respuesta: "Varía", explicacion: "Propiedades logaritmos" }
       ],
       "extremo": [
-        { pregunta: "Resuelve exponencial: 2^(x+1) = 16", respuesta: "3", explicacion: "2^(x+1)=2^4 → x+1=4 → x=3" },
-        { pregunta: "Demuestra log(a^b) = b log a", respuesta: "Propiedad de logaritmos", explicacion: "Usa definición y propiedades" },
-        { pregunta: "Resuelve sistema no lineal", respuesta: "Varía", explicacion: "Ejemplo complejo de sistemas" },
-        { pregunta: "Deriva f(x)=x² + 3x", respuesta: "2x + 3", explicacion: "Regla de derivación" },
-        { pregunta: "Calcula inversa f(x) = (x-2)/3", respuesta: "3x + 2", explicacion: "Despeja x" },
-        { pregunta: "Calcula cambio porcentual compuesto", respuesta: "Varía", explicacion: "Ejemplo compuesto" },
-        { pregunta: "Calcula función logarítmica", respuesta: "y = log x", explicacion: "Definición" },
-        { pregunta: "Ejemplo variable aleatoria continua", respuesta: "Altura", explicacion: "Valores en intervalo" },
-        { pregunta: "Aplica regla cadena", respuesta: "Varía", explicacion: "Derivación" },
-        { pregunta: "Calcula integral básica", respuesta: "Varía", explicacion: "Integral indefinida" }
+        { pregunta: "Resuelve ecuación logarítmica avanzada", respuesta: "Varía", explicacion: "Problema complejo" },
+        { pregunta: "Calcula función exponencial y = e^x", respuesta: "Definición", explicacion: "Constante e" },
+        { pregunta: "Calcula derivada compuesta (regla cadena)", respuesta: "Varía", explicacion: "Derivación avanzada" },
+        { pregunta: "Calcula integral definida ∫_0^1 x² dx", respuesta: "1/3", explicacion: "Integral básica" },
+        { pregunta: "Calcula razón trigonométrica coseno 60°", respuesta: "0.5", explicacion: "Definición coseno" },
+        { pregunta: "Calcula variable aleatoria continua", respuesta: "Varía", explicacion: "Ejemplo variable continua" },
+        { pregunta: "Calcula límite lim x→0 (sin x)/x", respuesta: "1", explicacion: "Límite fundamental" },
+        { pregunta: "Resuelve ecuación diferencial básica", respuesta: "Varía", explicacion: "Problema diferencial" }
       ]
     },
     "3medio": {
@@ -248,93 +232,82 @@
       ],
       "dificil": [
         { pregunta: "Multiplica y simplifica: (3+4i)(3 - 4i)", respuesta: "25", explicacion: "Producto conjugados: a²+b²" },
-        { pregunta: "Calcula varianza", respuesta: "Varía", explicacion: "Promedio de cuadrados de diferencias" },
-        { pregunta: "Ecuación circunferencia centro (2,3) radio 6", respuesta: "(x-2)² + (y-3)² = 36", explicacion: "Ecuación estándar" },
-        { pregunta: "Resuelve función exponencial: 2^x = 32", respuesta: "5", explicacion: "2^5=32" },
-        { pregunta: "Resuelve log₃(x) = 2", respuesta: "9", explicacion: "x = 3²" },
-        { pregunta: "Deriva f(x) = ln x", respuesta: "1/x", explicacion: "Regla derivada logaritmo natural" },
-        { pregunta: "Resuelve integral básica", respuesta: "Varía", explicacion: "Integral indefinida" },
-        { pregunta: "Simplifica expresión compleja", respuesta: "Varía", explicacion: "Depende" },
-        { pregunta: "Calcula determinante matriz 2x2", respuesta: "ad - bc", explicacion: "Definición determinante" },
-        { pregunta: "Resuelve ecuación cuadrática con discriminante 0", respuesta: "Una raíz real", explicacion: "Raíz doble" }
+        { pregunta: "Calcula varianza de conjunto de datos", respuesta: "Varía", explicacion: "Medida de dispersión" },
+        { pregunta: "Ecuación circunferencia centro (2,3) radio 4", respuesta: "(x-2)² + (y-3)² = 16", explicacion: "Ecuación general" },
+        { pregunta: "Calcula f''(x) de x³", respuesta: "6x", explicacion: "Segunda derivada" },
+        { pregunta: "Resuelve ecuación exponencial", respuesta: "Varía", explicacion: "Función exponencial" },
+        { pregunta: "Calcula logaritmo natural ln(e⁵)", respuesta: "5", explicacion: "Propiedad logaritmos" },
+        { pregunta: "Resuelve sistema ecuaciones complejas", respuesta: "Varía", explicacion: "Sistema complejo" },
+        { pregunta: "Deriva función logarítmica", respuesta: "1/x", explicacion: "Derivada log" },
+        { pregunta: "Calcula límite lim x→∞ (1 + 1/x)^x", respuesta: "e", explicacion: "Definición de e" },
+        { pregunta: "Área superficie esfera radio 3", respuesta: "113.1", explicacion: "4πr²" }
       ],
       "extremo": [
-        { pregunta: "Demuestra teorema de De Moivre", respuesta: "Varía", explicacion: "Potencias de números complejos" },
-        { pregunta: "Resuelve sistema 3x3", respuesta: "Varía", explicacion: "Métodos algebraicos" },
-        { pregunta: "Calcula integral definida", respuesta: "Varía", explicacion: "Cálculo integral" },
-        { pregunta: "Deriva funciones compuestas", respuesta: "Varía", explicacion: "Regla cadena" },
-        { pregunta: "Calcula límites indeterminados", respuesta: "Varía", explicacion: "Límites" },
-        { pregunta: "Resuelve ecuación diferencial básica", respuesta: "Varía", explicacion: "ODE simple" },
-        { pregunta: "Calcula transformada de Fourier", respuesta: "Varía", explicacion: "Análisis frecuencial" },
-        { pregunta: "Calcula eigenvalores", respuesta: "Varía", explicacion: "Álgebra lineal avanzada" },
-        { pregunta: "Calcula series de Fourier", respuesta: "Varía", explicacion: "Análisis matemático" },
-        { pregunta: "Calcula derivada implícita", respuesta: "Varía", explicacion: "Derivación" }
+        { pregunta: "Calcula integral ∫ x² dx", respuesta: "x³/3 + C", explicacion: "Integral básica" },
+        { pregunta: "Resuelve ecuación diferencial simple", respuesta: "Varía", explicacion: "Derivada e integral" },
+        { pregunta: "Demuestra identidad trigonométrica", respuesta: "Varía", explicacion: "Relación trigonométrica" },
+        { pregunta: "Calcula transformada de Fourier básica", respuesta: "Varía", explicacion: "Análisis de señales" },
+        { pregunta: "Resuelve sistema no lineal complejo", respuesta: "Varía", explicacion: "Sistemas avanzados" },
+        { pregunta: "Calcula límite complejo", respuesta: "Varía", explicacion: "Límites en cálculo" },
+        { pregunta: "Calcula serie de Fourier", respuesta: "Varía", explicacion: "Series armónicas" },
+        { pregunta: "Resuelve función implícita", respuesta: "Varía", explicacion: "Funciones implícitas" }
       ]
     },
     "4medio": {
       "facil": [
-        { pregunta: "Simplifica expresión: 2(x + 3) - 4x", respuesta: "6 - 2x", explicacion: "Distribuye y suma términos semejantes" },
-        { pregunta: "Área triángulo base 5 cm altura 12 cm", respuesta: "30", explicacion: "Área = (base × altura)/2" },
-        { pregunta: "Calcula perímetro rectángulo 8x5 cm", respuesta: "26", explicacion: "Perímetro = 2(base+altura)" },
-        { pregunta: "Resuelve: 3x + 4 = 19", respuesta: "5", explicacion: "3x = 15 → x = 5" },
-        { pregunta: "Convierte 0.2 a porcentaje", respuesta: "20%", explicacion: "Multiplica por 100" },
-        { pregunta: "Factoriza x² + 7x + 12", respuesta: "(x + 3)(x + 4)", explicacion: "Números que multiplican 12 y suman 7" },
-        { pregunta: "Resuelve: (x/2) + 3 = 7", respuesta: "8", explicacion: "x/2 = 4 → x=8" },
-        { pregunta: "Convierte 3000 g a kg", respuesta: "3", explicacion: "1000 g = 1 kg" },
-        { pregunta: "Calcula 15% de 80", respuesta: "12", explicacion: "15% × 80 = 12" },
-        { pregunta: "Suma: 3/5 + 2/5", respuesta: "1", explicacion: "Suma fracciones mismo denominador" }
+        { pregunta: "Simplifica: (x + y)²", respuesta: "x² + 2xy + y²", explicacion: "Producto notable" },
+        { pregunta: "Calcula área triángulo base 5 altura 8", respuesta: "20", explicacion: "Área básica" },
+        { pregunta: "Suma: 3x² + 4x²", respuesta: "7x²", explicacion: "Términos semejantes" },
+        { pregunta: "Resuelve: x - 4 = 10", respuesta: "14", explicacion: "Despeja x" },
+        { pregunta: "Representa función lineal", respuesta: "y = mx + b", explicacion: "Forma básica" },
+        { pregunta: "Calcula probabilidad simple", respuesta: "Varía", explicacion: "Eventos simples" },
+        { pregunta: "Calcula media y mediana", respuesta: "Varía", explicacion: "Medidas centrales" },
+        { pregunta: "Calcula volumen cilindro radio 3 altura 7", respuesta: "197.92", explicacion: "πr²h" }
       ],
       "medio": [
-        { pregunta: "Resuelve: x² - 4x - 5 = 0", respuesta: "5 y -1", explicacion: "Fórmula cuadrática" },
-        { pregunta: "Calcula volumen cubo lado 4 cm", respuesta: "64", explicacion: "Volumen = lado³" },
-        { pregunta: "Calcula media de: 4,7,9,10,15", respuesta: "9", explicacion: "Promedio de los valores" },
-        { pregunta: "Simplifica fracción 45/60", respuesta: "3/4", explicacion: "Dividir numerador y denominador por 15" },
-        { pregunta: "Calcula log₅25", respuesta: "2", explicacion: "5²=25" },
-        { pregunta: "Resuelve sistema: x + y = 10, x - y = 2", respuesta: "x=6, y=4", explicacion: "Sumar y despejar" },
-        { pregunta: "Calcula pendiente recta que pasa por (1,2) y (3,6)", respuesta: "2", explicacion: "(6-2)/(3-1)=2" },
-        { pregunta: "Convierte 0.625 a fracción", respuesta: "5/8", explicacion: "0.625 es 5/8" },
-        { pregunta: "Deriva f(x) = 3x²", respuesta: "6x", explicacion: "Regla de potencias" },
-        { pregunta: "Calcula cambio porcentual de 80 a 100", respuesta: "25%", explicacion: "Incremento porcentual" }
+        { pregunta: "Resuelve ecuación cuadrática", respuesta: "Varía", explicacion: "Solución con fórmula" },
+        { pregunta: "Calcula función inversa", respuesta: "Varía", explicacion: "Despeja x" },
+        { pregunta: "Calcula razón trigonométrica", respuesta: "Varía", explicacion: "Seno, coseno o tangente" },
+        { pregunta: "Calcula probabilidad compuesta", respuesta: "Varía", explicacion: "Eventos compuestos" },
+        { pregunta: "Calcula desviación estándar", respuesta: "Varía", explicacion: "Medida dispersión" },
+        { pregunta: "Simplifica expresión algebraica", respuesta: "Varía", explicacion: "Factorización y suma" },
+        { pregunta: "Calcula función exponencial", respuesta: "Varía", explicacion: "Definición y propiedades" },
+        { pregunta: "Resuelve sistema de ecuaciones", respuesta: "Varía", explicacion: "Método sustitución o eliminación" }
       ],
       "dificil": [
-        { pregunta: "Calcula integral ∫ x dx", respuesta: "x²/2 + C", explicacion: "Regla integral básica" },
-        { pregunta: "Resuelve ecuación logarítmica: log(x) = 2", respuesta: "100", explicacion: "10²=100" },
-        { pregunta: "Deriva f(x) = sin x", respuesta: "cos x", explicacion: "Regla derivada seno" },
-        { pregunta: "Calcula área trapezoide base 8 y 6 altura 4", respuesta: "28", explicacion: "Área = ((B + b) / 2) × h" },
-        { pregunta: "Resuelve sistema lineal 3x + 2y = 12 y x - y = 1", respuesta: "x=2, y=3", explicacion: "Despejar variables" },
-        { pregunta: "Calcula límite lim x→0 sin x / x", respuesta: "1", explicacion: "Límite notable" },
-        { pregunta: "Calcula media ponderada", respuesta: "Varía", explicacion: "Suma productos y divide" },
-        { pregunta: "Deriva f(x) = ln x", respuesta: "1/x", explicacion: "Regla logaritmo natural" },
-        { pregunta: "Calcula volumen esfera radio 3", respuesta: "113.1", explicacion: "V = 4/3 π r³" },
-        { pregunta: "Calcula número complejo conjugado de 4 + 5i", respuesta: "4 - 5i", explicacion: "Cambiar signo parte imaginaria" }
+        { pregunta: "Calcula integral definida", respuesta: "Varía", explicacion: "Cálculo integral" },
+        { pregunta: "Calcula derivada de función compuesta", respuesta: "Varía", explicacion: "Regla cadena" },
+        { pregunta: "Resuelve ecuación diferencial básica", respuesta: "Varía", explicacion: "Derivadas e integrales" },
+        { pregunta: "Calcula serie de Taylor", respuesta: "Varía", explicacion: "Expansión de funciones" },
+        { pregunta: "Calcula límite complejo", respuesta: "Varía", explicacion: "Límites en cálculo" },
+        { pregunta: "Calcula probabilidad condicional", respuesta: "Varía", explicacion: "Eventos dependientes" },
+        { pregunta: "Simplifica función trigonométrica", respuesta: "Varía", explicacion: "Identidades trigonométricas" },
+        { pregunta: "Calcula volumen sólido revolución", respuesta: "Varía", explicacion: "Cálculo integral" }
       ],
       "extremo": [
-        { pregunta: "Resuelve ecuación diferencial dy/dx = 3x²", respuesta: "y = x³ + C", explicacion: "Integrar función" },
-        { pregunta: "Calcula transformada de Laplace", respuesta: "Varía", explicacion: "Transformada integral" },
-        { pregunta: "Deriva función compuesta f(x) = e^{3x}", respuesta: "3e^{3x}", explicacion: "Regla cadena" },
-        { pregunta: "Calcula series de Fourier", respuesta: "Varía", explicacion: "Descomposición en senos y cosenos" },
-        { pregunta: "Calcula eigenvalores matriz 3x3", respuesta: "Varía", explicacion: "Álgebra lineal avanzada" },
-        { pregunta: "Resuelve integral definida ∫_0^1 x dx", respuesta: "0.5", explicacion: "Integral definida" },
-        { pregunta: "Calcula límite lim x→∞ (1 + 1/x)^x", respuesta: "e", explicacion: "Definición de e" },
-        { pregunta: "Calcula derivada implícita", respuesta: "Varía", explicacion: "Derivación" },
-        { pregunta: "Resuelve sistema no lineal avanzado", respuesta: "Varía", explicacion: "Sistemas complejos" },
-        { pregunta: "Calcula valor esperado variable aleatoria", respuesta: "Varía", explicacion: "Probabilidades y resultados" }
+        { pregunta: "Demuestra teorema algebraico", respuesta: "Varía", explicacion: "Prueba formal" },
+        { pregunta: "Resuelve ecuación diferencial avanzada", respuesta: "Varía", explicacion: "Cálculo avanzado" },
+        { pregunta: "Calcula transformada Laplace", respuesta: "Varía", explicacion: "Análisis matemático" },
+        { pregunta: "Demuestra identidad trigonométrica avanzada", respuesta: "Varía", explicacion: "Relaciones trigonométricas" },
+        { pregunta: "Calcula integral múltiple", respuesta: "Varía", explicacion: "Cálculo multivariable" },
+        { pregunta: "Resuelve sistema ecuaciones no lineales", respuesta: "Varía", explicacion: "Métodos avanzados" },
+        { pregunta: "Calcula serie de Fourier avanzada", respuesta: "Varía", explicacion: "Análisis armónico" },
+        { pregunta: "Analiza función implícita avanzada", respuesta: "Varía", explicacion: "Cálculo avanzado" }
       ]
     }
   };
 
   const tiemposDificultad = {
-    "facil": 8 * 60,
-    "medio": 6 * 60,
-    "dificil": 4 * 60,
-    "extremo": 3 * 60
+    facil: 8 * 60,
+    medio: 6 * 60,
+    dificil: 4 * 60,
+    extremo: 3 * 60
   };
 
-  // Variables UI
+  const board = document.getElementById("board");
   const cursoSelect = document.getElementById("curso-select");
   const dificultadSelect = document.getElementById("dificultad-select");
   const startBtn = document.getElementById("start-btn");
-  const board = document.getElementById("board");
   const explanationDiv = document.getElementById("explanation");
   const scoreboard = document.getElementById("scoreboard");
   const timerDisplay = document.getElementById("timer");
@@ -345,80 +318,90 @@
   let cartasSeleccionadas = [];
   let temporizador = null;
   let tiempoRestante = 0;
+  let bloqueoClick = false;
 
-  // Actualiza color del tablero según dificultad
-  function actualizarColorBoard() {
-    board.className = `board-${dificultadActual}`;
+  function mezclarArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
   }
 
-  // Crea cartas aleatorias basadas en curso y dificultad
   function crearCartas() {
-    board.innerHTML = "";
-    cartasSeleccionadas = [];
+    // Reiniciar variables
     puntaje = 0;
     actualizarPuntaje();
+    cartasSeleccionadas = [];
     explanationDiv.textContent = "";
     clearInterval(temporizador);
 
     cursoActual = cursoSelect.value;
     dificultadActual = dificultadSelect.value;
 
-    const ejercicios = bancoOperaciones[cursoActual]?.[dificultadActual];
+    const ejercicios = bancoOperaciones[cursoActual][dificultadActual];
     if (!ejercicios) {
-      explanationDiv.textContent = "No hay ejercicios para esta combinación.";
+      alert("No hay ejercicios para esta combinación.");
       return;
     }
 
-    // Tomar 8 ejercicios aleatorios para el memorice
-    const seleccionados = [];
-    const usadosIndices = new Set();
-    while (seleccionados.length < 8 && usadosIndices.size < ejercicios.length) {
-      const i = Math.floor(Math.random() * ejercicios.length);
-      if (!usadosIndices.has(i)) {
-        usadosIndices.add(i);
-        seleccionados.push(ejercicios[i]);
-      }
-    }
+    // Limpiar tablero
+    board.innerHTML = "";
+    board.className = "board-" + dificultadActual;
 
-    // Por cada ejercicio creamos dos cartas: pregunta y respuesta
+    // Seleccionar 8 pares de ejercicios para total 16 cartas
+    const seleccion = mezclarArray(ejercicios).slice(0, 8);
+
+    // Crear cartas: para cada ejercicio, crear dos cartas (pregunta y respuesta)
     const cartas = [];
-    seleccionados.forEach((e, idx) => {
-      cartas.push({ id: idx, text: e.pregunta, tipo: "pregunta", respuesta: e.respuesta, explicacion: e.explicacion });
-      cartas.push({ id: idx, text: e.respuesta, tipo: "respuesta", respuesta: e.respuesta, explicacion: e.explicacion });
+    seleccion.forEach((item, index) => {
+      cartas.push({
+        id: index,
+        tipo: "pregunta",
+        text: item.pregunta,
+        explicacion: item.explicacion
+      });
+      cartas.push({
+        id: index,
+        tipo: "respuesta",
+        text: item.respuesta,
+        explicacion: item.explicacion
+      });
     });
 
-    // Mezclar cartas
-    cartas.sort(() => Math.random() - 0.5);
+    mezclarArray(cartas);
 
-    // Crear elementos DOM para cartas
-    cartas.forEach(carta => {
-      const div = document.createElement("div");
-      div.classList.add("card");
-      div.dataset.id = carta.id;
-      div.dataset.tipo = carta.tipo;
-      div.dataset.respuesta = carta.respuesta;
-      div.dataset.explicacion = carta.explicacion;
-      div.textContent = "";
-      div.addEventListener("click", manejarClickCarta);
-      board.appendChild(div);
+    // Crear elementos DOM
+    cartas.forEach(c => {
+      const cardDiv = document.createElement("div");
+      cardDiv.classList.add("card");
+      cardDiv.dataset.id = c.id;
+      cardDiv.dataset.tipo = c.tipo;
+      cardDiv.dataset.text = c.text;
+      cardDiv.dataset.explicacion = c.explicacion;
+      cardDiv.textContent = ""; // texto oculto al inicio
+      cardDiv.addEventListener("click", manejarClickCarta);
+      board.appendChild(cardDiv);
     });
 
     iniciarTemporizador();
-    actualizarColorBoard();
   }
 
   function manejarClickCarta(e) {
+    if (bloqueoClick) return;
+
     const carta = e.currentTarget;
     if (carta.classList.contains("flipped") || carta.classList.contains("matched")) return;
 
     carta.classList.add("flipped");
-    carta.textContent = carta.dataset.tipo === "pregunta" ? carta.dataset.text : carta.dataset.respuesta;
+    carta.textContent = carta.dataset.text;
 
     cartasSeleccionadas.push(carta);
 
     if (cartasSeleccionadas.length === 2) {
+      bloqueoClick = true;
       const [primera, segunda] = cartasSeleccionadas;
-      // Solo son par si mismo id pero diferente tipo
+
       if (
         primera.dataset.id === segunda.dataset.id &&
         primera.dataset.tipo !== segunda.dataset.tipo
@@ -428,24 +411,31 @@
         segunda.classList.add("matched");
         puntaje += 10;
         explanationDiv.textContent = "¡Correcto! " + primera.dataset.explicacion;
+
+        setTimeout(() => {
+          bloqueoClick = false;
+          explanationDiv.textContent = "";
+          revisarFinJuego();
+        }, 1500);
       } else {
         // Par incorrecto
         puntaje = Math.max(0, puntaje - 5);
         explanationDiv.textContent = "Incorrecto. " + (segunda.dataset.explicacion || "Revisa bien el ejercicio.");
-        // Mostrar temporalmente color rojo y después ocultar texto
+
         primera.classList.add("wrong");
         segunda.classList.add("wrong");
+
         setTimeout(() => {
           primera.classList.remove("flipped", "wrong");
           segunda.classList.remove("flipped", "wrong");
           primera.textContent = "";
           segunda.textContent = "";
           explanationDiv.textContent = "";
+          bloqueoClick = false;
         }, 1500);
       }
       actualizarPuntaje();
       cartasSeleccionadas = [];
-      revisarFinJuego();
     }
   }
 
@@ -458,6 +448,7 @@
     if (todasCartas.every(c => c.classList.contains("matched"))) {
       clearInterval(temporizador);
       explanationDiv.textContent = "¡Felicidades! Terminaste el juego.";
+      bloquearCartas();
     }
   }
 
@@ -472,6 +463,7 @@
         clearInterval(temporizador);
         explanationDiv.textContent = "¡Se acabó el tiempo!";
         bloquearCartas();
+        bloqueoClick = true;
       }
     }, 1000);
   }
@@ -487,24 +479,23 @@
     todasCartas.forEach(c => {
       c.removeEventListener("click", manejarClickCarta);
       c.classList.add("flipped");
-      // Mostrar texto para que el jugador vea
-      c.textContent = c.dataset.tipo === "pregunta" ? c.dataset.text : c.dataset.respuesta;
+      c.textContent = c.dataset.text;
     });
   }
 
   startBtn.addEventListener("click", crearCartas);
 
-  // Ajustar para que al cambiar selecciones actualice el color
   cursoSelect.addEventListener("change", () => {
     cursoActual = cursoSelect.value;
   });
+
   dificultadSelect.addEventListener("change", () => {
     dificultadActual = dificultadSelect.value;
-    actualizarColorBoard();
+    board.className = "board-" + dificultadActual;
   });
 
   // Inicializar color y timer vacío
-  actualizarColorBoard();
+  board.className = "board-" + dificultadActual;
   timerDisplay.textContent = "Tiempo: 00:00";
 </script>
 
